@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service-v1
+  template:
+    metadata:
+      labels:
+        app: user-service-v1
+    spec:
+      containers:
+      - name: user-service-v1
+        image: user-service-v1:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URI
+          value: "mongodb+srv://User00:Coen6313@cluster0.4otmd.mongodb.net/"
+        - name: RABBITMQ_HOST
+          value: "rabbitmq"
+        - name: RABBITMQ_DEFAULT_USER
+          value: "user"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-v1-service
+spec:
+  selector:
+    app: user-service-v1
+  ports:
+  - port: 80
+    targetPort: 5000
+  type: ClusterIP

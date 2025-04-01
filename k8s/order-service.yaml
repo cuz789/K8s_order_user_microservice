@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+      - name: order-service
+        image: order-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5002
+        env:
+        - name: MONGO_URI
+          value: "mongodb+srv://User00:Coen6313@cluster0.4otmd.mongodb.net/"
+        - name: RABBITMQ_HOST
+          value: "rabbitmq"
+        - name: RABBITMQ_DEFAULT_USER
+          value: "user"
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service-service
+spec:
+  selector:
+    app: order-service
+  ports:
+  - port: 80
+    targetPort: 5002
+  type: ClusterIP
